@@ -28,5 +28,19 @@ void entry::impl::reset_device( ) {
 	null after we release our device into main function
 */
 void entry::impl::clean_device( ) {
+	/* if our device is avaible release it to our main function */
+	if ( g_device ) {
+		g_device->Release( );
 
+		/* after we released our device we also want to set it to null/nullptr */
+		g_device = NULL;
+	}
+
+	/* if our d3d pointer is avaible release it to our main function */
+	if ( g_pd3d ) {
+		g_pd3d->Release( );
+
+		/* after we released our d3d pointer we also want to set it to null/nullptr */
+		g_pd3d = NULL;
+	}
 }
