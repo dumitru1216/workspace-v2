@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="entry_point\entry_point.hpp" />
     <ClInclude Include="includes.hpp" />
+    <ClInclude Include="math\vec2_t.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry_point\entry_point.cpp" />
