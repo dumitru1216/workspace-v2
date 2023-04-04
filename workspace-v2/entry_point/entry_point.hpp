@@ -11,11 +11,16 @@
 /* include all vs needs */
 #include "../includes.hpp"
 
+/* do some defines */
+/* you dont realise how much i hate those BOOL stuff in big case so we gonna make them small case */
+#define vs_bool BOOL
+
 /* entry_point namespace */
 namespace entry {
 	class impl {
 		void reset_device( );
 		void clean_device( );
+		vs_bool create_device( );
 	};
 	inline const auto g_entry = std::make_unique<impl>( );
 }
