@@ -91,3 +91,21 @@ vs_bool entry::impl::create_device( HWND hwnd ) {
 	/* now lets return true */
 	return vs_true;
 }
+
+/* this function initialize all render states */
+void entry::impl::setup_render_states( std::function< void( ) > func ) {
+	/* backup dx state */
+	IDirect3DStateBlock9* d3d9_state_block{}; /* retarded */
+
+	/* store this to null */
+	d3d9_state_block = vs_null;
+
+	/* create state block */
+	if ( create_state_block( D3DSBT_ALL, &d3d9_state_block ) < 0 )
+		return;
+
+	/* get display size */
+	vs_rect screen_rect{};
+	get_client_rect( g_window, &screen_rect ); /* get the client rect and port it to screen-rect */
+
+}

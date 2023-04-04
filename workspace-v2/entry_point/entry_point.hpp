@@ -25,8 +25,10 @@ static HWND g_window;
 #define vs_bool BOOL
 #define vs_true TRUE
 #define vs_false FALSE
-#define direct_3d_create Direct3DCreate9
+#define vs_null NULL
+#define vs_rect RECT
 #define zero_memory ZeroMemory
+#define get_client_rect GetClientRect
 
 /* d3d defines, i know this seems so fucking retarded but i love lowercase and snake_case */
 #define d3d_windowed g_d3d9pp.Windowed
@@ -38,6 +40,14 @@ static HWND g_window;
 #define d3d_swap_effect_discard D3DSWAPEFFECT_DISCARD
 #define d3d_fmt_unknown D3DFMT_UNKNOWN
 #define d3d_fmt_16 D3DFMT_D16
+#define direct_3d_create Direct3DCreate9
+#define create_state_block g_device->CreateStateBlock
+#define set_vertex_shader g_device->SetVertexShader
+#define set_pixel_shader g_device->SetPixelShader
+#define set_render_state g_device->SetRenderState
+#define set_texture_stage_state g_device->SetTextureStageState
+#define set_sampler_state g_device->SetSamplerState
+#define set_transform g_device->SetTransform
 
 /* entry_point namespace */
 namespace entry {
@@ -45,6 +55,7 @@ namespace entry {
 		void reset_device( );
 		void clean_device( );
 		vs_bool create_device( HWND hwnd );
+		void setup_render_states( std::function< void( ) > func );
 	};
 	inline const auto g_entry = std::make_unique<impl>( );
 }
