@@ -5,3 +5,14 @@
 *.lock
 *.vsidx
 *.opendb
+*.tlog
+*.iobj
+*.pdb
+*.recipe
+*.obj
+*.ipdb
+*.ipch
+*.exe
+*.ipch
+.vs/workspace-v2/v17/.suo
+*.log
