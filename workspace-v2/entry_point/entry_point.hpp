@@ -48,7 +48,7 @@ static HWND g_window;
 #define set_texture_stage_state g_device->SetTextureStageState
 #define set_sampler_state g_device->SetSamplerState
 #define set_transform g_device->SetTransform
-
+#define set_viewport g_device->SetViewport
 /* entry_point namespace */
 namespace entry {
 	class impl {

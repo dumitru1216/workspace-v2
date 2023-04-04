@@ -108,4 +108,74 @@ void entry::impl::setup_render_states( std::function< void( ) > func ) {
 	vs_rect screen_rect{};
 	get_client_rect( g_window, &screen_rect ); /* get the client rect and port it to screen-rect */
 
+	/* grab display size */
+	vec2_t display_size{};
+	display_size = vec2_t( ( float )( screen_rect.right - screen_rect.left ), ( float )( screen_rect.bottom - screen_rect.top ) );
+
+	set_pixel_shader( vs_null );
+	set_vertex_shader( vs_null );
+
+	/* im not that retarded so yeah... */
+	/* set render state */
+	set_render_state( D3DRS_CULLMODE, D3DCULL_NONE );
+	set_render_state( D3DRS_LIGHTING, false );
+	set_render_state( D3DRS_ZENABLE, false );
+	set_render_state( D3DRS_ALPHABLENDENABLE, true );
+	set_render_state( D3DRS_ALPHATESTENABLE, false );
+	set_render_state( D3DRS_BLENDOP, D3DBLENDOP_ADD );
+	set_render_state( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+	set_render_state( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	set_render_state( D3DRS_SCISSORTESTENABLE, true );
+
+	/* set texture stage state */
+	set_texture_stage_state( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+	set_texture_stage_state( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	set_texture_stage_state( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+	set_texture_stage_state( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+	set_texture_stage_state( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	set_texture_stage_state( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+
+	/* sampler state */
+	set_sampler_state( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+	set_sampler_state( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+
+	/* setup viewport | oh we had to initialize a pointer */
+	auto setup_view_port = [ ]( vec2_t size ) -> void {
+		/* clean setup yeah, sorry for that */
+		D3DVIEWPORT9 vp;
+		vp.X = vp.Y = 0;
+		vp.Width = ( DWORD )size.x;
+		vp.Height = ( DWORD )size.y;
+		vp.MinZ = 0.0f;
+		vp.MaxZ = 1.0f;
+
+		/* set it */
+		set_viewport( &vp );
+	}; /* we also have to call it to initialize it */
+	setup_view_port( display_size );
+
+	/* ortographic matrix pos, 1 year ago i was doing it with {} now lets do it with lambada */
+	auto setup_ortographic_matrix = [ ]( vec2_t size ) -> void {
+		const float L = 0.5f, R = size.x + 0.5f, T = 0.5f, B = size.y + 0.5f;
+		D3DMATRIX mat_identity = { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } };
+		D3DMATRIX mat_projection =
+		{
+			2.0f / ( R - L ),   0.0f,         0.0f,  0.0f,
+			0.0f,         2.0f / ( T - B ),   0.0f,  0.0f,
+			0.0f,         0.0f,         0.5f,  0.0f,
+			( L + R ) / ( L - R ),  ( T + B ) / ( B - T ),  0.5f,  1.0f,
+		};
+
+		/* set transformation */
+		set_transform( D3DTS_WORLD, &mat_identity );
+		set_transform( D3DTS_VIEW, &mat_identity );
+		set_transform( D3DTS_PROJECTION, &mat_projection );
+	};
+
+	/* run function */
+	func( );
+
+	/* restore dx state */
+	d3d9_state_block->Apply( );
+	d3d9_state_block->Release( );
 }
