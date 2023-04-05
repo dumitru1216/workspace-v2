@@ -71,6 +71,7 @@ static HWND g_window;
 /* entry_point namespace */
 namespace entry {
 	class impl {
+	public:
 		void reset_device( );
 		void clean_device( );
 		vs_bool create_device( HWND hwnd );

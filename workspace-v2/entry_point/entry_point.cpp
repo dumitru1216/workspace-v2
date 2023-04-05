@@ -10,6 +10,83 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 	/* lzp class initialization */
 	LPCTSTR lpz_class{};
 	lpz_class = "workspace v2";
+
+	/* register the class and initialize window */
+	auto initialize_ = [ ]( HINSTANCE h_instance, LPCTSTR lpz_class ) -> int {
+		if ( !entry::g_entry->register_window_class( h_instance, lpz_class ) ) {
+			return 0;
+		}
+
+		/* initialize our main window */
+		if ( !entry::g_entry->initialize_window( h_instance, lpz_class, "workspace v2" ) ) {
+			return 0;
+		}
+	};
+	initialize_( h_instance, lpz_class );
+
+	/* create our d3d9 device and clean device */
+	if ( !entry::g_entry->create_device( g_window ) ) {
+		entry::g_entry->clean_device( );
+		UnregisterClass( lpz_class, h_instance );
+		return 0;
+	}
+
+	/* initialize window */
+	auto initialize_window = [ ]( ) -> int {
+		/* Show window */
+		ShowWindow( g_window, SW_SHOWDEFAULT );
+		UpdateWindow( g_window );
+
+		/* initialize memory */
+		MSG msg{};
+		zero_memory( &msg, sizeof( msg ) );
+
+		while ( msg.message != WM_QUIT ) {
+			/* peek message */
+			if ( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) ) {
+				/* translate strings */
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+				continue;
+			}
+
+			/* fixing rendering bugs */
+			g_device->SetRenderState( D3DRS_ZENABLE, false );
+			g_device->SetRenderState( D3DRS_ALPHABLENDENABLE, false );
+			g_device->SetRenderState( D3DRS_SCISSORTESTENABLE, false );
+			g_device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA( 23, 23, 23, 0 ), 1.0f, 0 );
+
+			/* initialize rendering */
+			if ( g_device->BeginScene( ) >= 0 ) {
+				entry::g_entry->setup_render_states( [ = ]( ) {
+					/* here we are going to render our stuff */
+				} );
+
+				/* unload external window */
+				if ( GetAsyncKeyState( VK_END ) ) {
+					ExitProcess( -1 );
+				}
+
+				/* end rendering */
+				g_device->EndScene( );
+			}
+
+			/* handle packet loss */
+			HRESULT result = g_device->Present( NULL, NULL, NULL, NULL );
+			if ( result == D3DERR_DEVICELOST && g_device->TestCooperativeLevel( ) == D3DERR_DEVICENOTRESET )
+				entry::g_entry->reset_device( );
+		}
+	};
+	initialize_window( );
+
+	/* release device */
+	entry::g_entry->clean_device( );
+
+	/* unregister class */
+	DestroyWindow( g_window );
+	UnregisterClass( lpz_class, h_instance );
+
+	return 0;
 }
 
 /* reset device function, we use that to reset or result d3d window */
@@ -21,7 +98,7 @@ void entry::impl::reset_device( ) {
 	*/
 	auto reset_d3d_revice = [ ]( D3DPRESENT_PARAMETERS reset_parrameter ) -> HRESULT {
 		/* this shit might crash or might work, im not sure yet we will see once we run it :) */
-		g_device->Reset( &reset_parrameter );
+		return g_device->Reset( &reset_parrameter );
 	};
 
 	/* store stuff to our result */
@@ -195,24 +272,21 @@ vs_atom entry::impl::register_window_class( HINSTANCE instance, LPCTSTR class_na
 	WNDCLASSEX wcex{}; /* initialize class */
 
 	/* initialize client */
-	auto initialzize_client = [ ]( WNDCLASSEX wcex, HINSTANCE instance, LPCTSTR class_name ) -> vs_atom {
-		wcex.cbSize = sizeof( WNDCLASSEX );
-		wcex.style = CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc = wnd_processing;
-		wcex.cbClsExtra = 0;
-		wcex.cbWndExtra = 0;
-		wcex.hInstance = instance;
-		wcex.hIcon = LoadIcon( instance, MAKEINTRESOURCE( IDI_GUITEST ) );
-		wcex.hCursor = LoadCursor( nullptr, IDC_ARROW );
-		wcex.hbrBackground = ( HBRUSH )( COLOR_WINDOW + 1 );
-		wcex.lpszMenuName = MAKEINTRESOURCE( IDC_GUITEST );
-		wcex.lpszClassName = class_name;
-		wcex.hIconSm = LoadIcon( wcex.hInstance, MAKEINTRESOURCE( IDI_SMALL ) );
+	wcex.cbSize = sizeof( WNDCLASSEX );
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = wnd_processing;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = instance;
+	wcex.hIcon = LoadIcon( instance, MAKEINTRESOURCE( IDI_GUITEST ) );
+	wcex.hCursor = LoadCursor( nullptr, IDC_ARROW );
+	wcex.hbrBackground = ( HBRUSH )( COLOR_WINDOW + 1 );
+	wcex.lpszMenuName = MAKEINTRESOURCE( IDC_GUITEST );
+	wcex.lpszClassName = class_name;
+	wcex.hIconSm = LoadIcon( wcex.hInstance, MAKEINTRESOURCE( IDI_SMALL ) );
 
-		/* register the class */
-		return RegisterClassEx( &wcex );
-	}; /* we also have to call it */
-	initialzize_client( wcex, instance, class_name );
+	/* register the class */
+	return RegisterClassEx( &wcex );
 }
 
 /* window initialization */
