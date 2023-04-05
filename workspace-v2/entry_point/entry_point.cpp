@@ -37,6 +37,26 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 		ShowWindow( g_window, SW_SHOWDEFAULT );
 		UpdateWindow( g_window );
 
+		auto s_init_imgui = [ ]( ) -> void {
+			/* check version */
+			IMGUI_CHECKVERSION( );
+
+			/* create context and style */
+			ImGui::CreateContext( );
+			ImGuiIO& io = ImGui::GetIO( ); ( void )io;
+			ImGui::StyleColorsDark( );
+
+			/* init warper and fonts */
+			ImGui_ImplWin32_Init( g_window );
+			ImGui_ImplDX9_Init( g_device );
+
+			ImFontConfig font_config;
+			font_config.OversampleH = 1;
+			font_config.OversampleV = 1;
+			font_config.PixelSnapH = 1;
+		};
+		s_init_imgui( );
+
 		/* initialize memory */
 		MSG msg{};
 		zero_memory( &msg, sizeof( msg ) );
@@ -50,6 +70,21 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 				continue;
 			}
 
+			// start frame
+			ImGui_ImplDX9_NewFrame( );
+			ImGui_ImplWin32_NewFrame( );
+			ImGui::NewFrame( );
+
+
+			ImGui::SetNextWindowSize( ImVec2( 400, 400 ) );
+			ImGui::Begin( "##fluent_menu", nullptr );
+			{
+
+
+			}; ImGui::End( );
+
+			ImGui::EndFrame( );
+
 			/* fixing rendering bugs */
 			g_device->SetRenderState( D3DRS_ZENABLE, false );
 			g_device->SetRenderState( D3DRS_ALPHABLENDENABLE, false );
@@ -60,6 +95,8 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 			if ( g_device->BeginScene( ) >= 0 ) {
 				entry::g_entry->setup_render_states( [ = ]( ) {
 					/* here we are going to render our stuff */
+					ImGui::Render( );
+					ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData( ) );		
 				} );
 
 				/* unload external window */
@@ -304,8 +341,31 @@ vs_bool entry::impl::initialize_window( HINSTANCE instance, LPCTSTR class_name, 
 	return vs_true;
 }
 
+/* forward declare */
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
 /* window process */
 LRESULT CALLBACK wnd_processing( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp ) {
+	if ( ImGui_ImplWin32_WndProcHandler( hwnd, msg, wp, lp ) )
+		return true;
+
+	switch ( msg ) {
+		case WM_SIZE:
+			if ( g_device != NULL && wp != SIZE_MINIMIZED ) {
+				g_d3d9pp.BackBufferWidth = LOWORD( lp );
+				g_d3d9pp.BackBufferHeight = HIWORD( lp );
+				entry::g_entry->reset_device( );
+			}
+			return 0;
+		case WM_SYSCOMMAND:
+			if ( ( wp & 0xfff0 ) == SC_KEYMENU ) // Disable ALT application menu
+				return 0;
+			break;
+		case WM_DESTROY:
+			::PostQuitMessage( 0 );
+			return 0;
+	}
+
 	return DefWindowProcA( hwnd, msg, wp, lp );
 }
 

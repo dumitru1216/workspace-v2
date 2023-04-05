@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning ( disable : 4005 )
 
 /* std */
 #include <memory>
@@ -9,3 +10,9 @@
 
 /* main includes */
 #include "math/vec2_t.hpp"
+
+/* imgui */
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx9.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_internal.h"
