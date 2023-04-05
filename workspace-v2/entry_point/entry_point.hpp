@@ -19,6 +19,21 @@ static LPDIRECT3DDEVICE9 g_device = NULL;
 static D3DPRESENT_PARAMETERS g_d3d9pp = {};
 static HWND g_window;
 
+/* resources */
+#define IDS_APP_TITLE 103
+#define IDR_MAINFRAME 128
+#define IDD_GUITEST_DIALOG 102
+#define IDD_ABOUTBOX 103
+#define IDM_ABOUT 104
+#define IDM_EXIT 105
+#define IDI_GUITEST 107
+#define IDI_SMALL 108
+#define IDC_GUITEST 109
+#define IDC_MYICON 2
+#ifndef IDC_STATIC
+#define IDC_STATIC -1
+#endif
+
 /* do some defines */
 /* you dont realise how much i hate those BOOL stuff in big case so we gonna make them small case */
 /* fuck you visual studio */
@@ -27,8 +42,11 @@ static HWND g_window;
 #define vs_false FALSE
 #define vs_null NULL
 #define vs_rect RECT
+#define vs_atom ATOM
 #define zero_memory ZeroMemory
 #define get_client_rect GetClientRect
+#define vs_lresult LRESULT
+#define alloc_console AllocConsole
 
 /* d3d defines, i know this seems so fucking retarded but i love lowercase and snake_case */
 #define d3d_windowed g_d3d9pp.Windowed
@@ -49,6 +67,7 @@ static HWND g_window;
 #define set_sampler_state g_device->SetSamplerState
 #define set_transform g_device->SetTransform
 #define set_viewport g_device->SetViewport
+
 /* entry_point namespace */
 namespace entry {
 	class impl {
@@ -56,6 +75,9 @@ namespace entry {
 		void clean_device( );
 		vs_bool create_device( HWND hwnd );
 		void setup_render_states( std::function< void( ) > func );
+		vs_atom register_window_class( HINSTANCE, LPCTSTR );
+		vs_bool initialize_window( HINSTANCE instance, LPCTSTR class_name, LPCTSTR title );
+		LRESULT CALLBACK wnd_proc( HWND, UINT, WPARAM, LPARAM );
 	};
 	inline const auto g_entry = std::make_unique<impl>( );
 }

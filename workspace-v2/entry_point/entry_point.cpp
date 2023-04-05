@@ -2,7 +2,14 @@
 
 int main( HINSTANCE h_instance, HINSTANCE h_prev_instance, 
 		  LPWSTR lp_cmd_line, int n_cmd_show ) {
-	/* main function so we can build and we also here call everything so yeah... */
+	/* main function so we can build and we also here call everything so yeah... 
+		console alocation 
+	*/
+	alloc_console( );
+
+	/* lzp class initialization */
+	LPCTSTR lpz_class{};
+	lpz_class = "workspace v2";
 }
 
 /* reset device function, we use that to reset or result d3d window */
@@ -178,4 +185,58 @@ void entry::impl::setup_render_states( std::function< void( ) > func ) {
 	/* restore dx state */
 	d3d9_state_block->Apply( );
 	d3d9_state_block->Release( );
+}
+
+/* window process pointer */
+LRESULT CALLBACK wnd_processing( HWND, UINT, WPARAM, LPARAM );
+
+/* register class */
+vs_atom entry::impl::register_window_class( HINSTANCE instance, LPCTSTR class_name ) {
+	WNDCLASSEX wcex{}; /* initialize class */
+
+	/* initialize client */
+	auto initialzize_client = [ ]( WNDCLASSEX wcex, HINSTANCE instance, LPCTSTR class_name ) -> vs_atom {
+		wcex.cbSize = sizeof( WNDCLASSEX );
+		wcex.style = CS_HREDRAW | CS_VREDRAW;
+		wcex.lpfnWndProc = wnd_processing;
+		wcex.cbClsExtra = 0;
+		wcex.cbWndExtra = 0;
+		wcex.hInstance = instance;
+		wcex.hIcon = LoadIcon( instance, MAKEINTRESOURCE( IDI_GUITEST ) );
+		wcex.hCursor = LoadCursor( nullptr, IDC_ARROW );
+		wcex.hbrBackground = ( HBRUSH )( COLOR_WINDOW + 1 );
+		wcex.lpszMenuName = MAKEINTRESOURCE( IDC_GUITEST );
+		wcex.lpszClassName = class_name;
+		wcex.hIconSm = LoadIcon( wcex.hInstance, MAKEINTRESOURCE( IDI_SMALL ) );
+
+		/* register the class */
+		return RegisterClassEx( &wcex );
+	}; /* we also have to call it */
+	initialzize_client( wcex, instance, class_name );
+}
+
+/* window initialization */
+vs_bool entry::impl::initialize_window( HINSTANCE instance, LPCTSTR class_name, LPCTSTR title ) {
+	/* get position on screen, i just dint wanted to make it snake_case full this, it keps getting boring*/
+	vs_rect screen_rect{};
+	GetWindowRect( GetDesktopWindow( ), &screen_rect );
+
+	/* on the whole screen */
+	g_window = CreateWindowEx( WS_EX_APPWINDOW, class_name, title, WS_POPUP,
+							   screen_rect.left, screen_rect.top, screen_rect.right /* width */,
+							   screen_rect.bottom /* height */, NULL, NULL, instance, NULL );
+
+	if ( !g_window ) { return vs_false; }
+	return vs_true;
+}
+
+/* window process */
+LRESULT CALLBACK wnd_processing( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp ) {
+	return DefWindowProcA( hwnd, msg, wp, lp );
+}
+
+/* call for window processing */
+LRESULT CALLBACK entry::impl::wnd_proc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp ) {
+	/* lets call wnd_process */
+	wnd_processing( hwnd, msg, wp, lp );
 }
