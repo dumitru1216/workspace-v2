@@ -10,6 +10,7 @@
 
 /* main includes */
 #include "math/vec2_t.hpp"
+#include "math/color_t.hpp"
 
 /* imgui */
 #include "imgui/imgui.h"
