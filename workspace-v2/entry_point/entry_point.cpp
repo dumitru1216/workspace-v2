@@ -70,20 +70,15 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 				continue;
 			}
 
-			// start frame
+			/* start frame */ 
 			ImGui_ImplDX9_NewFrame( );
 			ImGui_ImplWin32_NewFrame( );
 			ImGui::NewFrame( );
 
-
-			ImGui::SetNextWindowSize( ImVec2( 400, 400 ) );
-			ImGui::Begin( "##fluent_menu", nullptr );
-			{
-
-
-			}; ImGui::End( );
+			/* here u render menu */
 
 			ImGui::EndFrame( );
+			/* end frame */
 
 			/* fixing rendering bugs */
 			g_device->SetRenderState( D3DRS_ZENABLE, false );
