@@ -14,6 +14,7 @@ namespace render {
 
 		/* initialize part */
 		void add_rect_filled( int x, int y, int w, int h, color color, int rounding = 0.f );
+		void add_rect( int x, int y, int w, int h, color color, int rounding = 0.f );
 		void initialize_fonts( );
 	};
 	const auto g_render = std::make_unique<impl>( );
