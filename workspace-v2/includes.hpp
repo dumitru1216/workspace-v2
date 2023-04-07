@@ -1,7 +1,9 @@
 #pragma once
 #pragma warning ( disable : 4005 )
+#define WINDOWS_IGNORE_PACKING_MISMATCH
+#define WIN32_LEAN_AND_MEAN      // Exclude rarely-used stuff from Windows headers
 
-/* std */
+#include <windows.h>
 #include <memory>
 #include <sstream>
 #include <iostream>

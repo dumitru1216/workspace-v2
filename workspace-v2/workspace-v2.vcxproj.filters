@@ -14,6 +14,8 @@
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
     <ClInclude Include="render\render.hpp" />
     <ClInclude Include="math\color_t.hpp" />
+    <ClInclude Include="framework\externals\externals.hpp" />
+    <ClInclude Include="framework\framework.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry_point\entry_point.cpp" />
@@ -24,5 +26,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="render\render.cpp" />
+    <ClCompile Include="framework\externals\externals.cpp" />
+    <ClCompile Include="framework\framework.cpp" />
   </ItemGroup>
 </Project>

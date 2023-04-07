@@ -43,7 +43,7 @@ int main( HINSTANCE h_instance, HINSTANCE h_prev_instance,
 
 			/* create context and style */
 			ImGui::CreateContext( );
-			ImGuiIO& io = ImGui::GetIO( ); ( void )io;
+			ImGuiIO& io = ImGui::GetIO( );
 			ImGui::StyleColorsDark( );
 
 			/* init warper and fonts */
