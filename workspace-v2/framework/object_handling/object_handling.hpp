@@ -23,5 +23,5 @@ namespace object_handling {
 
 		void set_index( const uintptr_t m_last );
 	};
-	inline const auto object_handling = std::make_unique<impl>( );
+	inline const auto g_object_handling = std::make_unique<impl>( );
 }

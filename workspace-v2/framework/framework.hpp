@@ -21,6 +21,9 @@ namespace framework {
 			it makes it cleaner
 		*/
 		framework_t e_framework;
+
+		/* initialize framework */
+		void initialize( );
 	};
 	inline const auto g_framework = std::make_unique<impl>( );
 }
