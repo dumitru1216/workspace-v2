@@ -135,8 +135,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="entry_point\entry_point.hpp" />
+    <ClInclude Include="framework\details\details.hpp" />
     <ClInclude Include="framework\externals\externals.hpp" />
     <ClInclude Include="framework\framework.hpp" />
+    <ClInclude Include="framework\input\input.hpp" />
+    <ClInclude Include="framework\objects\window\window.hpp" />
+    <ClInclude Include="framework\object_handling\object_handling.hpp" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -152,8 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry_point\entry_point.cpp" />
+    <ClCompile Include="framework\details\details.cpp" />
     <ClCompile Include="framework\externals\externals.cpp" />
     <ClCompile Include="framework\framework.cpp" />
+    <ClCompile Include="framework\input\input.cpp" />
+    <ClCompile Include="framework\objects\window\window.cpp" />
+    <ClCompile Include="framework\object_handling\object_handling.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx9.cpp" />

@@ -16,6 +16,10 @@
     <ClInclude Include="math\color_t.hpp" />
     <ClInclude Include="framework\externals\externals.hpp" />
     <ClInclude Include="framework\framework.hpp" />
+    <ClInclude Include="framework\details\details.hpp" />
+    <ClInclude Include="framework\input\input.hpp" />
+    <ClInclude Include="framework\object_handling\object_handling.hpp" />
+    <ClInclude Include="framework\objects\window\window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry_point\entry_point.cpp" />
@@ -28,5 +32,9 @@
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="framework\externals\externals.cpp" />
     <ClCompile Include="framework\framework.cpp" />
+    <ClCompile Include="framework\details\details.cpp" />
+    <ClCompile Include="framework\input\input.cpp" />
+    <ClCompile Include="framework\object_handling\object_handling.cpp" />
+    <ClCompile Include="framework\objects\window\window.cpp" />
   </ItemGroup>
 </Project>
