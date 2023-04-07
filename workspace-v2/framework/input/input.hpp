@@ -5,11 +5,11 @@ namespace input {
 	class impl {
 	public:
 		void pool_input( );
-		void set_mouse_pos( const vec2_t m_pos );
-		void set_mouse_wheel( const float m_mouse );
+		void set_mouse_pos( const vec2_t e_pos );
+		void set_mouse_wheel( const float e_mouse );
 
-		bool key_pressed( const uintptr_t m_key );
-		bool mouse_pointer( const vec2_t m_pos, const vec2_t m_size );
+		bool key_pressed( const uintptr_t e_key );
+		bool mouse_pointer( const vec2_t e_pos, const vec2_t e_size );
 
 		float get_mouse_wheel( );
 		vec2_t get_mouse_pos( );
