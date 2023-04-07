@@ -1,6 +1,8 @@
 #pragma once
 #include "../includes.hpp"
 
+/* main credits for the ui design goes to xxoe */
+
 namespace framework {
 	/* maximum handling */
 	inline constexpr int e_maximum = 1000;
